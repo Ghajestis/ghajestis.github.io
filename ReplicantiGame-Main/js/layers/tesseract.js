@@ -67,6 +67,26 @@ addLayer("t", {
                 return new Decimal(2).pow(getBuyableAmount(this.layer, this.id))
             },
         },
+        13: {
+            cost(x) {
+                return new Decimal(100).pow(x).mul(100)
+            },
+            display() {
+                return `Double Replicanti Speed
+                \nCurrently: ×${format(this.effect())}
+                Costs: ${format(this.cost())} Tesseracts`
+            },
+            canAfford() {
+                return player.t.points.gte(this.cost())
+            },
+            buy() {
+                player.t.points = player.t.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).plus(1))
+            },
+            effect() {
+                return new Decimal(2).pow(getBuyableAmount(this.layer, this.id))
+            },
+        },
     },
     clickables: {
         101: {
@@ -330,12 +350,21 @@ addLayer("t", {
         44: {
             fullDisplay() {
                 return `Unlock Tetracanti <br>(Requires all other upgrades purchased)
-                <br>(NYI)
+                <br>
                 <br><br>Costs: ${formatWhole(500000)}`
             },
             canAfford() {
-                return false
-                //return player.t.points.gte(500000)
+                let upg = false
+                for (const id of [
+                    11, 12, 13, 14,
+                    21, 22, 23, 24,
+                    31, 32, 33, 34,
+                    41, 42, 43
+                ]) {
+                    if (hasUpgrade("t", id)) {
+                        upg = true
+                    } else return false
+                } return (upg == true && player.t.points.gte(500000))
             },
             pay() {
                 player.t.points = player.t.points.sub(500000)

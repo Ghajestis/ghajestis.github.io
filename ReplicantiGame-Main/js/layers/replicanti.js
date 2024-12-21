@@ -43,9 +43,10 @@ addLayer("r", {
         player.r.interval = (new Decimal(100) //base
             .mul(Decimal.div(1, player.s.multiplier))
             .mul(Decimal.div(1, player.s.meterEff3))
-            .mul(Decimal.div(1, upgradeEffect("t", 12)).max(1))
-            .mul(Decimal.div(1, upgradeEffect("t", 21)).max(1))
-            .mul(Decimal.div(1, upgradeEffect("t", 33)).max(1))
+            .mul(Decimal.div(1, upgradeEffect("t", 12)).min(1))
+            .mul(Decimal.div(1, upgradeEffect("t", 21)).min(1))
+            .mul(Decimal.div(1, upgradeEffect("t", 33)).min(1))
+            .mul(Decimal.div(1, buyableEffect("t", 13)).min(1))
 
             .mul(Decimal.pow(player.r.intervalFactor,
                     getBuyableAmount(this.layer, 12)
