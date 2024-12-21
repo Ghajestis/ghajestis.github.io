@@ -223,10 +223,10 @@ addLayer("r", {
         ["blank", "100px"],
         ["display-text",
             function() {
-                let amt = 1
+                let amt = new Decimal(1)
                 let phrase = ""
                 let punct = ""
-                hasUpgrade("t", 11) ? amt = player.s.total : player.s.max
+                hasUpgrade("t", 11) ? amt = player.s.total : amt = player.s.best
                 hasUpgrade("t", 11) ? phrase = "total" : phrase = "best"
                 hasUpgrade("t", 31) ? punct = "," : punct = "."
                 return `Your ${phrase} Replicanti Shard amount is <h1 style="color:#5739c4; font-size:30px">${formatWhole(amt)}</h1>, which is translated to a <h1 style="color:#5739c4; font-size:30px">×${format(player.s.multiplier)}</h1> multiplier to Replication speed${punct}`
