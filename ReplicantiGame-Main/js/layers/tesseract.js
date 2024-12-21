@@ -4,7 +4,7 @@ addLayer("t", {
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
-		points: new Decimal(1),
+		points: new Decimal(0),
 
         tesseractMult: new Decimal(1),
         bestTime: 1000000000000000000000000000000,
