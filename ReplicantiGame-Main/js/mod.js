@@ -3,7 +3,8 @@ let modInfo = {
 	author: "Ghajestis",
 	pointsName: "Replicanti",
 	modFiles: ["layers/main.js", "layers/replicanti.js", "layers/shards.js", "layers/tesseract.js",
-		"tree.js"],
+		"tree.js",
+		"layers/misc/info.js"],
 
 	discordName: "",
 	discordLink: "",

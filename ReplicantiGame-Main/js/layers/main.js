@@ -49,7 +49,7 @@ addLayer("m", {
                 },
             },
             "Info": {
-
+                embedLayer: "info"
             },
         }
     },
