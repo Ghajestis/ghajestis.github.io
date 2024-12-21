@@ -14,9 +14,16 @@ addLayer("m", {
     layerShown(){return true},
     tabFormat: [
         ["display-text",
-            function() { return `You have <h1 style="color:#13b1f0; font-size:30px">${formatWhole(player.r.points)}</h1> Replicanti.<br>
+            function() { 
+                let text = ' '
+                if (player.t.points.gte(1)) text = `You have <h1 style="color:#13b1f0; font-size:30px">${formatWhole(player.r.points)}</h1> Replicanti.<br>
             You have <h3 style="color:#5739c4;">${formatWhole(player.s.points)}</h3> Replicanti ${pluralize(player.s.points, "Shard")}.<br>
-            You have <h3 style="color:#daa625;">${formatWhole(player.t.points)}</h3> ${pluralize(player.t.points, "Tesseract")}.`}
+            You have <h3 style="color:#daa625;">${formatWhole(player.t.points)}</h3> ${pluralize(player.t.points, "Tesseract")}.`
+
+                else text = `You have <h1 style="color:#13b1f0; font-size:30px">${formatWhole(player.r.points)}</h1> Replicanti.<br>
+            You have <h3 style="color:#5739c4;">${formatWhole(player.s.points)}</h3> Replicanti ${pluralize(player.s.points, "Shard")}.`
+            return text
+            },
         ],
         ["microtabs", "main"],
     ],
