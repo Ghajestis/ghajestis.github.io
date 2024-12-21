@@ -72,6 +72,8 @@ addLayer("r", {
 
         player.r.intervalFactor = new Decimal(0.9)
         if (hasUpgrade("t", 14)) player.r.intervalFactor = player.r.intervalFactor.sub(0.05)
+
+        if (player.r.points.gte(player.r.best)) player.r.best = player.r.points
     },
     buyables: {
         11: {
@@ -218,7 +220,7 @@ addLayer("r", {
     tabFormat: [
         ["blank", "100px"],
         ["display-text", "Replicanti upgrades, unlike other upgrades, divide your Replicanti amount instead of subtracting from it."],
-        ["display-text", "Replication speed is decreased the more Replicanti you have. The slowdown is increased beyond 1.8e308, and becomes super-exponential beyond 1e100,000.<br>Note to self to write an info tab at some point"],
+        ["display-text", "Replication speed is decreased the more Replicanti you have. The slowdown is increased beyond 1.8e308, and becomes super-exponential beyond 1e100,000."],
         ["buyables", [1]],
         ["blank", "100px"],
         ["display-text",

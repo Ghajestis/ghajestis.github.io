@@ -29,6 +29,12 @@ addLayer("m", {
     ],
     microtabs: {
         main: {
+            "Options": {
+
+            },
+            "Achievements": {
+
+            },
             "Replicanti": {
                 embedLayer: "r"
             },
@@ -37,7 +43,13 @@ addLayer("m", {
                 buttonStyle: {
                     "color":"#daa625",
                     "border-color":"#daa625"
-                }
+                },
+                unlocked() {
+                    return (player.r.best.gte("1.8e308") || player.t.total.gte(1))
+                },
+            },
+            "Info": {
+
             },
         }
     },
