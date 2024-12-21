@@ -234,10 +234,7 @@ addLayer("r", {
         ],
         ["display-text",
             function() {
-                let txt = ``
-                hasUpgrade("t", 31) 
-                ? txt = `and a <h1 style="color:#5739c4; font-size:30px">×${format(player.s.rsMultiplier)}</h1> multiplier to Replicanti Shard gain.` : txt = null
-                return `${txt}`
+                return hasUpgrade("t", 31) ? `and a <h1 style="color:#5739c4; font-size:30px">×${format(player.s.rsMultiplier)}</h1> multiplier to Replicanti Shard gain.` : null
             }
         ],
         ["blank", "50px"],
