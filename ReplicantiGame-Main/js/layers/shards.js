@@ -13,7 +13,7 @@ addLayer("s", {
         //power on shards for the multiplier formula
         mulFormulaPow: new Decimal(1),
 
-        best: new Decimal(0),
+        max: new Decimal(0),
         total: new Decimal(0),
         gainExponent: new Decimal(0.25),
 
