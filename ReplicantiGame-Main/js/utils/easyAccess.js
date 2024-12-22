@@ -89,3 +89,7 @@ function achievementEffect(layer, id) {
 function gridEffect(layer, id) {
 	return (gridRun(layer, 'getEffect', player[layer].grid[id], id))
 }
+
+function gameSpeed() {
+	let amt = new Decimal(1)
+}

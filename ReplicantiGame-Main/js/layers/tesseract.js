@@ -8,6 +8,20 @@ addLayer("t", {
 
         tesseractMult: new Decimal(1),
         bestTime: 1000000000000000000000000000000,
+
+        tetracanti: new Decimal(1),
+        tetracantiPower: new Decimal(0.5),
+        tetracantiInterval: new Decimal(1000),
+        tetracantiBase: new Decimal(1.2),
+        tetracantiMult: new Decimal(1),
+
+        tetrUpg1: new Decimal(0),
+        tetrUpg2: new Decimal(0),
+        tetrUpg3: new Decimal(0),
+        tetrUpg4: new Decimal(0),
+
+        tetraGalCap: new Decimal(0),
+        tetraGalaxy: new Decimal(0),
     }},
     color: "#daa625",
     requires: new Decimal(1e15), // Can be a function that takes requirement increases into account
@@ -25,6 +39,25 @@ addLayer("t", {
         player.t.bestTime = player.t.bestTime
         player.t.tesseractMult = new Decimal(1)
             .mul(buyableEffect("t", 11))
+
+        /*
+            // TETRACANTI
+        */
+        player.t.tetracantiPower = new Decimal(0.5).plus(buyableEffect("r", 103))
+        player.t.tetracantiMult = player.t.tetracanti.log10().plus(1).pow(player.t.tetracantiPower)
+        player.t.tetraGalCap = player.t.tetrUpg4
+
+        player.t.tetracantiBase = new Decimal(1.2)
+        player.t.tetracantiInterval = new Decimal(10000)
+        if (player.t.tetracanti.lt("1.8e308")) {
+            player.t.tetracanti = player.t.tetracanti.plus(
+                player.t.tetracanti.mul(player.t.tetracantiBase).mul(Decimal.div(1000, player.t.tetracantiInterval)).mul(diff)
+            )
+        }
+        if (player.t.tetracanti.gte("1.8e308")) {
+            player.t.tetracanti = new Decimal("1.8e308")
+        }
+
     },
     buyables: {
         11: {
@@ -103,6 +136,7 @@ addLayer("t", {
             },
             onClick() {
                 if (player.t.resetTime < player.t.bestTime ) player.t.bestTime = player.t.resetTime
+                player.t.tetracanti = new Decimal(1)
                 doReset("t")
                 layerDataReset("s")
             },
