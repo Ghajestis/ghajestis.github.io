@@ -13,8 +13,15 @@ addLayer("r", {
         slowdownBase: new Decimal(100),
         factor: new Decimal(2),
 
+        upg1ScaleStart: new Decimal(99),
+        upg2ScaleStart: new Decimal(150),
+
+        chanceUpgCostBase: new Decimal(15),
+
         formatalpha: 0,
         dir: "plus",
+
+        superscaleStart: new Decimal("1e100000")
     }},
     color: "#13b1f0",
     requires: new Decimal(10), // Can be a function that takes requirement increases into account
@@ -28,6 +35,28 @@ addLayer("r", {
         let replicanti = player.r.points
         let c = player.r.chance
         player.r.slowdownStrength = new Decimal(1).mul(buyableEffect(this.layer, 22))
+        if (inChallenge("challenges", 12)) {
+            player.r.superscaleStart = new Decimal("1.8e308")
+        } else {
+            player.r.superscaleStart = new Decimal("1e100000")
+        }
+
+        if (inChallenge("challenges", 12)) {
+            player.r.chanceUpgCostBase = new Decimal(1.2)
+        } else {
+            player.r.chanceUpgCostBase = new Decimal(15)
+        }
+
+        if (inChallenge("challenges", 11)) {
+            player.r.upg1ScaleStart = new Decimal(1)
+            player.r.upg2ScaleStart = new Decimal(1)
+        } else if (inChallenge("challenges", 12)) {
+            player.r.upg1ScaleStart = new Decimal("eee100")
+            player.r.upg2ScaleStart = new Decimal(150)
+        } else {
+            player.r.upg1ScaleStart = new Decimal(99)
+            player.r.upg2ScaleStart = new Decimal(150)
+        }
 
         player.r.slowdownBase = new Decimal(100)
 
@@ -69,18 +98,27 @@ addLayer("r", {
             }
         }
 
+        if (!inChallenge("challenges", 12)) {
+            player.r.factor = new Decimal(2).plus(
+                Decimal.log10(replicanti).sub(player.r.superscaleStart.log10()).div(1000)
+            ).max(2)
+        } else {
+            player.r.factor = new Decimal(2).pow_base(
+                Decimal.log10(replicanti).sub(player.r.superscaleStart.log10()).div(10)
+            ).max(2)
+        }
+        
+
         if (player.r.points.gte("1.8e308")) {
             player.r.interval = player.r.interval.mul(100).mul(Decimal.pow(player.r.factor, Decimal.log10(replicanti).div(100)))
             //post infinity slowdown (*100 and then *2 per e308)
 
         }
-        
-        player.r.factor = new Decimal(2).plus(
-            Decimal.log10(replicanti).sub(100000).div(1000)
-        ).max(2)
 
         player.r.intervalFactor = new Decimal(0.9)
         if (hasUpgrade("t", 14)) player.r.intervalFactor = player.r.intervalFactor.sub(0.05)
+        
+        player.r.intervalFactor = player.r.intervalFactor.mul(player.t.galaxyEffect)
 
         if (player.r.points.gte(player.r.best)) player.r.best = player.r.points
 
@@ -93,8 +131,9 @@ addLayer("r", {
     buyables: {
         11: {
             cost(x) {
-                if (x.gte(99)) x = x.sub(99).pow(1.25).plus(99)
-                return new Decimal(100).mul(Decimal.pow(15, x))
+                s = player.r.upg1ScaleStart
+                if (x.gte(s)) x = x.sub(s).pow(1.25).plus(s)
+                return new Decimal(100).mul(x.pow_base(player.r.chanceUpgCostBase))
             },
             display() { 
                 return `<h3>Replicanti Chance: ${formatWhole(player.r.chance.mul(100))}%
@@ -102,14 +141,30 @@ addLayer("r", {
             },
             canAfford() { return player.r.points.gte(this.cost())},
             buy() {
-                player.r.points = player.r.points.div(this.cost())
+                if (!hasChallenge("challenges", 11)) player.r.points = player.r.points.div(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).plus(1))
             },
-            purchaseLimit() { return hasUpgrade("t", 42) ? new Decimal("1e1000000") : new Decimal(99) }
+            purchaseLimit() { return hasUpgrade("t", 42) ? new Decimal("1e1000000") : new Decimal(99) },
+            buyMax() {
+                player.r.upg1ScaleStart
+                x = player.r.points
+                if (!inChallenge("challenges", 12)) {
+                    amt1 = Decimal.ln(x.div(100)).div(Decimal.ln(player.r.chanceUpgCostBase)).min(s).ceil()
+                    amt2 = (Decimal.ln(x.div(100)).div(Decimal.ln(player.r.chanceUpgCostBase)).sub(s)).root(1.25).ceil()
+                } else {
+                    amt1 = Decimal.ln(x.div(100)).div(Decimal.ln(player.r.chanceUpgCostBase)).ceil()
+                    amt2 = new Decimal(0)
+                }
+                setBuyableAmount(this.layer, this.id, amt1.plus(amt2))
+            },
+            style: {
+                "margin-bottom": "10px"
+            },
         },
         12: {
             cost(x) {
-                if (x.gt(150)) x = x.sub(150).pow(2).plus(150)
+                s = player.r.upg2ScaleStart
+                if (x.gt(s)) x = x.sub(s).pow(2).plus(s)
                 return new Decimal(100).mul(Decimal.pow(10, x))
             },
             display() { 
@@ -118,13 +173,27 @@ addLayer("r", {
             },
             canAfford() { return player.r.points.gte(this.cost())},
             buy() {
-                player.r.points = player.r.points.div(this.cost())
+                if (!hasChallenge("challenges", 11)) player.r.points = player.r.points.div(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).plus(1))
+            },
+            buyMax() {
+                s = player.r.upg2ScaleStart
+                x = player.r.points
+                amt1 = Decimal.ln(x.div(100)).div(Decimal.ln(10)).min(s).ceil()
+                amt2 = (Decimal.ln(x.div(100)).div(Decimal.ln(10)).sub(s)).root(2).ceil()
+                setBuyableAmount(this.layer, this.id, amt1.plus(amt2))
+            },
+            style: {
+                "margin-bottom": "10px"
             },
         },
         13: {
             cost() {return new Decimal("1.78e308")},
             display() {
+                if (inChallenge("challenges", 11)) {
+                    return `<h3>Replicanti Shards
+                    \nLocked (Predicate Diminution)`
+                }
                 return `<h3>Replicanti Shards
                 \nReset Replicanti and Upgrades to gain <b>${format(getResetGain("s"))}</b> Shards
                 Next at: ${format(getNextAt("s"))}
@@ -142,6 +211,9 @@ addLayer("r", {
                     setBuyableAmount("r", 12, upg[1])
                 }
             },
+            style: {
+                "margin-bottom": "10px"
+            },
         },
 
         21: {
@@ -157,7 +229,7 @@ addLayer("r", {
                     return `Increase the exponent to Replicanti Shard gain
                     \n${format(player.s.gainExponent)} → ${format(player.s.gainExponent.plus(0.05))} Costs: ${formatWhole(this.cost())} Replicanti ${pluralize(this.cost(), "Shard")}`
                 } else return `Increase the exponent to Replicanti Shard gain
-                \nCAPPED: ×${format(new Decimal(this.effect()))}`
+                \nCAPPED: ×${format(player.s.gainExponent)}`
             },
             style: {
                 "border-color": "#5739c4",
@@ -247,7 +319,7 @@ addLayer("r", {
             display() {
                 let upg = player.t.tetrUpg2
                 return `<h3>Tetracanti Interval: ${formatTime(player.t.tetracantiInterval)}
-                <br>→ ${formatTime(player.t.tetracantiInterval.mul(0.8))} Costs: ${format(this.cost())} Tesseracts`
+                <br>→ ${formatTime(player.t.tetracantiInterval.mul(0.9))} Costs: ${format(this.cost())} Tesseracts`
             },
             style: {
                 "border-color": "#fdff78",
@@ -290,7 +362,7 @@ addLayer("r", {
         104: {
             cost(x) {
                 x = player.t.tetrUpg4
-                return Decimal.pow(new Decimal(10).pow(x), x).mul(10000000)
+                return Decimal.pow(1.5, x.pow(2).plus(x)).mul(10000000)
             },
             display() {
                 let upg = player.t.tetrUpg4
@@ -329,7 +401,92 @@ addLayer("r", {
             display() { return player.s.isFillingShards ? `<h2>Filling...</h2>` : `<h2>Drain</h2>` },
             canClick() { return true },
             onClick() { player.s.isFillingShards = !player.s.isFillingShards },
-        }
+            style: {
+                "background": "#0f0f0f",
+                "border-color": "#5739c4",
+                "color": "#FFFFFF",
+                "margin": "20px 0px 20px 0px",
+                "border-radius": "5px",
+                "height": "30px",
+                "width": "100px"
+            }
+        },
+        101: {
+            display() {
+                if (player.t.tetracanti.gte("1.8e308") && player.t.tetraGalaxy.lt(player.t.tetraGalCap)) {
+                    return `<h2>Reset your Tetracanti for a Tetracanti Galaxy
+                    <br>Currently: ${formatWhole(player.t.tetraGalaxy)}`
+                } else if (player.t.tetraGalaxy.eq(player.t.tetraGalCap)) {
+                    return `<h2>Maximum Tetracanti Galaxies reached
+                    <br>Currently: ${formatWhole(player.t.tetraGalaxy)}`
+                } else {
+                    return `<h2>Reach ${formatWhole(new Decimal("1.80e308"))} Replicanti to gain a Tetracanti Galaxy
+                    <br>Currently: ${formatWhole(player.t.tetraGalaxy)}`
+                }
+            },
+            canClick() {
+                return (player.t.tetracanti.gte("1.8e308") && player.t.tetraGalaxy.lt(player.t.tetraGalCap))
+            },
+            onClick() {
+                player.t.tetracanti = new Decimal(1)
+                player.t.tetraGalaxy = player.t.tetraGalaxy.plus(1)
+            },
+            style: {
+                "border-color": "#fdff78 !important",
+                "height": "75px !important",
+                "width": "300px !important",
+                "background": "#0f0f0f",
+                "color": "#FFFFFF",
+                "margin": "20px 0px 20px 0px",
+                "border-radius": "5px",
+            },
+        },
+        201: {
+            display() {
+                return `Buy Max`
+            },
+            canClick() {
+                return hasChallenge("challenges", 11)
+            },
+            onClick() {
+                buyMaxBuyable("r", 11)
+            },
+            unlocked() {
+                return hasChallenge("challenges", 11)
+            },
+            style: {
+                "border-color": "#FEFEFE !important",
+                "height": "30px !important",
+                "width": "240px !important",
+                "background": "#0f0f0f",
+                "color": "#FFFFFF",
+                "margin": "0px 0px 0px 0px",
+                "border-radius": "5px",
+            },
+        },
+        202: {
+            display() {
+                return `Buy Max`
+            },
+            canClick() {
+                return hasChallenge("challenges", 11)
+            },
+            onClick() {
+                buyMaxBuyable("r", 12)
+            },
+            unlocked() {
+                return hasChallenge("challenges", 11)
+            },
+            style: {
+                "border-color": "#FEFEFE !important",
+                "height": "30px !important",
+                "width": "240px !important",
+                "background": "#0f0f0f",
+                "color": "#FFFFFF",
+                "margin": "0px 255px 0px 0px",
+                "border-radius": "5px",
+            },
+        },
     },
     tabFormat: {
         "Replicanti": {
@@ -338,6 +495,7 @@ addLayer("r", {
                 ["display-text", "Replicanti upgrades, unlike other upgrades, divide your Replicanti amount instead of subtracting from it."],
                 ["display-text", "Replication speed is decreased the more Replicanti you have. The slowdown is increased beyond 1.8e308, and becomes super-exponential beyond 1e100,000."],
                 ["buyables", [1]],
+                ["clickables", [20]],
                 ["blank", "100px"],
                 ["display-text",
                     function() {
@@ -368,7 +526,7 @@ addLayer("r", {
                         ],
                         "blank",
                         ["bar", ["shardMilestone"]],
-                        "clickables",
+                        ["clickable", [11]],
                         ["display-text",
                             function() { return `Total filled: ${formatWhole(Decimal.min(player.s.shardMeter, player.s.shardMeterCap))} / ${formatWhole(player.s.shardMeterCap)}
                             <br><br>×${format(player.s.meterEff1)} Replicanti Shards<br>×${format(player.s.meterEff2)} Fill speed` }
@@ -386,6 +544,7 @@ addLayer("r", {
             buttonStyle: {
                 "border-color": "#FFFFFF",
                 "color": "#FFFFFF",
+                "margin-top": "20px"
             },
         },
         "Tetracanti": {
@@ -405,11 +564,14 @@ addLayer("r", {
                     }
                 ],
                 ["blank", "20px"],
-                ["buyables", [10]]
+                ["buyables", [10]],
+                ["blank", "20px"],
+                ["clickables", [10]],
             ],
             buttonStyle: {
                 "border-color": "#FFFFFF",
                 "color": "#FFFFFF",
+                "margin-top": "20px"
             },
             unlocked() {
                 return hasUpgrade("t", 44)
@@ -431,14 +593,5 @@ addLayer("r", {
             "border-radius": "5px",
             "width": "700px",
         }},
-        "clickable"() { return {
-            "background": "#0f0f0f",
-            "border-color": "#5739c4",
-            "color": "#FFFFFF",
-            "margin": "20px 0px 20px 0px",
-            "border-radius": "5px",
-            "height": "30px",
-            "width": "100px"
-        }}
     }
 })

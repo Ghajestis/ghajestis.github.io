@@ -4,18 +4,18 @@ let modInfo = {
 	pointsName: "Replicanti",
 	modFiles: ["layers/main.js", "layers/replicanti.js", "layers/shards.js", "layers/tesseract.js",
 		"tree.js",
-		"layers/misc/info.js"],
+		"layers/misc/info.js", "layers/misc/challenge.js"],
 
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (1), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	offlineLimit: 314159265358,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "v1.0.0",
+	name: "Initial Release",
 }
 
 let changelog = `<h1>Changelog:</h1><br>

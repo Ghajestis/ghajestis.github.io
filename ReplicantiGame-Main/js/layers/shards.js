@@ -53,7 +53,7 @@ addLayer("s", {
         milestones = player.s.milestones
 
         player.s.drainRate = new Decimal(1)
-        if (hasUpgrade("t", 23)) player.s.drainRate = player.s.drainRate.mul(2.5)
+        if (hasUpgrade("t", 23)) player.s.drainRate = player.s.drainRate.mul(5)
 
         //power effect to the RS effect
         player.s.mulFormulaPow = new Decimal(1)
@@ -91,7 +91,6 @@ addLayer("s", {
             .mul(buyableEffect("t", 12))
         
         if (hasUpgrade("t", 31)) player.s.shardGainMultiplier = player.s.shardGainMultiplier.mul(player.s.rsMultiplier)
-            
     },
     buyables: {
     },
@@ -107,7 +106,8 @@ addLayer("s", {
     },
 
     canReset() {
-        return getResetGain("s").gte(1)
+        return (getResetGain("s").gte(1)
+        && !inChallenge("challenges", 11))
     },
 
     doReset() {

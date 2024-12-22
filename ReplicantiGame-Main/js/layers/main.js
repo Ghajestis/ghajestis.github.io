@@ -38,6 +38,9 @@ addLayer("m", {
             "Replicanti": {
                 embedLayer: "r"
             },
+            "Challenges": {
+                embedLayer: "challenges"
+            },
             "Tesseract": {
                 embedLayer: "t",
                 buttonStyle: {
