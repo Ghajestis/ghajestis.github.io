@@ -139,7 +139,7 @@ addLayer("r", {
                 return `<h3>Replicanti Chance: ${formatWhole(player.r.chance.mul(100))}%
                 \n+1% Costs: ${formatWhole(this.cost())} Replicanti</h3>`
             },
-            canAfford() { return player.r.points.gte(this.cost())},
+            canAfford() { return (player.r.points.gte(this.cost()) && !inChallenge("challenges", 13)) },
             buy() {
                 if (!hasChallenge("challenges", 11)) player.r.points = player.r.points.div(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).plus(1))
@@ -171,7 +171,7 @@ addLayer("r", {
                 return `<h3>Replicanti Interval: ${formatTime(player.r.interval)}
                 \n→ ${formatTime(player.r.interval.mul(player.r.intervalFactor))} Costs: ${formatWhole(this.cost())} Replicanti</h3>`
             },
-            canAfford() { return player.r.points.gte(this.cost())},
+            canAfford() { return (player.r.points.gte(this.cost()) && !inChallenge("challenges", 13))},
             buy() {
                 if (!hasChallenge("challenges", 11)) player.r.points = player.r.points.div(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).plus(1))
@@ -242,7 +242,7 @@ addLayer("r", {
             canAfford() {
                 let purchaseCap = new Decimal(5)
                 if (hasUpgrade("t", 34)) purchaseCap = new Decimal(50)
-                return (player.s.points.gte(this.cost()) && player.s.shardUpg1.lt(purchaseCap))
+                return (player.s.points.gte(this.cost()) && player.s.shardUpg1.lt(purchaseCap)) && !inChallenge("challenges", 13)
             },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
@@ -277,7 +277,7 @@ addLayer("r", {
                 else { return new Decimal(0.1) }
             },
             canAfford() {
-                return (player.s.points.gte(this.cost()) && player.s.shardUpg2.lt(5))
+                return (player.s.points.gte(this.cost()) && player.s.shardUpg2.lt(5)) && !inChallenge("challenges", 13)
             },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())

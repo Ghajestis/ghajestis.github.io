@@ -6,8 +6,9 @@ addLayer("challenges", {
                     function() { 
                         let amt = new Decimal(1)
                         if (tmp.challenges.challenges[11].unlocked) { amt = "1e100000" }
-                        if (tmp.challenges.challenges[12].unlocked) { amt = "1e120000" }
-                        return `Reach ${format(amt)} Replicanti to unlock the next Challenge` 
+                        if (tmp.challenges.challenges[12].unlocked) { amt = "1e110000" }
+                        if (tmp.challenges.challenges[13].unlocked) { amt = "1e150000" }
+                        return `Reach ${format(amt)} Replicanti to unlock the next Challenge.` 
                     }
                 ],
                 ["blank", "20px"],
@@ -15,6 +16,7 @@ addLayer("challenges", {
                     [
                         ["challenge", [11]],
                         ["challenge", [12]],
+                        ["challenge", [13]],
                     ]
                 ],
             ],
@@ -29,12 +31,12 @@ addLayer("challenges", {
     challenges: {
         11: {
             name() {
-                return `<h3>Predicate Diminution</h3>`
+                return `<h3 style="position: absolute; top: -30px; text-align: left; left: 10px">Predicate Diminution (C1)</h3>`
             },
             fullDisplay() {
                 return `
                 <h5>Replicanti Upgrade costs begin scaling immediately. You cannot gain Replicanti Shards, and Tetracanti are disabled.
-                <br>Goal: ${format("1e3500")} Replicanti
+                <br><br>Goal: ${format("1e3500")} Replicanti
                 <br>Reward: Replicanti Upgrades no longer spend your Replicanti, and you can buy max Replicanti Upgrades</h5>
                 `
             },
@@ -59,12 +61,12 @@ addLayer("challenges", {
         },
         12: {
             name() {
-                return `<h3>Exacerbated Annihilation`
+                return `<h3 style="position: absolute; top: -30px; text-align: left; left: 10px">Exacerbated Annihilation (C2)`
             },
             fullDisplay() {
                 return `
                 <h5>The post-1.00e100,000 Replicanti Scaling begins at 1.8e308 instead, and is far more powerful. The Chance upgrade no longer scales, and is far cheaper.
-                <br>Goal: ${format("1e6000")} Replicanti
+                <br><br>Goal: ${format("1e6000")} Replicanti
                 <br>Reward: Tetracanti Galaxies are twice as powerful
                 `
             },
@@ -84,7 +86,36 @@ addLayer("challenges", {
             canComplete() {
                 return player.r.points.gte("1e6000")
             }
-        }
+        },
+        13: {
+            name() {
+                return `<h3 style="position: absolute; top: -30px; text-align: left; left: 10px">Monolithic Command (C3)</h3>`
+            },
+            fullDisplay() {
+                return `
+                <h5>You can no longer buy Replicanti Upgrades or Shard Upgrades, and Tetracanti are disabled. The formula for the Replicanti Shard boost is far more powerful.
+                <br><br>Goal: ${format("1e100000")}(?) Replicanti
+                <br>Reward: The Replicanti Interstice fill cap is vastly increased, and gains additional effects at certain fill values
+                `
+            },
+            unlocked() {
+                return player.t.unlockedChalls[2]
+            },
+            onEnter() {
+                player.t.tetracanti = new Decimal(1)
+                player.t.tetraGalaxy = new Decimal(0)
+                doReset("t", true)
+                layerDataReset("s")
+            },
+            onExit() {
+                player.t.tetracanti = new Decimal(1)
+                doReset("t", true)
+                layerDataReset("s")
+            },
+            canComplete() {
+                return player.r.points.gte("1e1000000000000000000000000000000")
+            }
+        },
     },
 
     componentStyles: {

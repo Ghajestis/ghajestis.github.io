@@ -55,7 +55,7 @@ addLayer("t", {
 
         player.t.tetracantiBase = new Decimal(1.2).pow(player.t.tetrUpg1.plus(1))
         player.t.tetracantiInterval = new Decimal(1000).mul(player.t.tetrUpg2.pow_base(0.9))
-        if (player.t.tetracanti.lt("1.8e308") && !inChallenge("challenges", 11)) {
+        if (player.t.tetracanti.lt("1.8e308") && !inChallenge("challenges", 11) && !inChallenge("challenges", 13)) {
             player.t.tetracanti = player.t.tetracanti.plus(
                 player.t.tetracanti.mul(player.t.tetracantiBase).mul(Decimal.div(1000, player.t.tetracantiInterval)).mul(diff)
             )
@@ -70,7 +70,7 @@ addLayer("t", {
 
         if (player.r.best.gte("1e70000") || inChallenge("challenges", 11) || hasChallenge("challenges", 11)) { player.t.unlockedChalls[0] = true } else player.t.unlockedChalls[0] = false
         if (player.r.best.gte("1e100000") || inChallenge("challenges", 12) || hasChallenge("challenges", 12)) { player.t.unlockedChalls[1] = true } else player.t.unlockedChalls[1] = false
-        if (player.r.best.gte("1e120000") || inChallenge("challenges", 13) || hasChallenge("challenges", 13)) { player.t.unlockedChalls[2] = true } else player.t.unlockedChalls[2] = false
+        if (player.r.best.gte("1e110000") || inChallenge("challenges", 13) || hasChallenge("challenges", 13)) { player.t.unlockedChalls[2] = true } else player.t.unlockedChalls[2] = false
         if (player.r.best.gte("1e150000") || inChallenge("challenges", 14) || hasChallenge("challenges", 14)) { player.t.unlockedChalls[3] = true } else player.t.unlockedChalls[3] = false
     },
     buyables: {

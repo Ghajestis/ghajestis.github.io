@@ -35,6 +35,8 @@ addLayer("s", {
         meterEff3: new Decimal(1),
         meterEff4: new Decimal(1),
 
+        shardEffPowBaseChall: new Decimal(1),
+
         shardGainMultiplier: new Decimal(1),
     }},
     color: "#5739c4",
@@ -52,6 +54,8 @@ addLayer("s", {
     update(diff) {
         milestones = player.s.milestones
 
+        if (inChallenge("challenges", 13)) { player.s.shardEffPowBaseChall = new Decimal(2) } else player.s.shardEffPowBaseChall = new Decimal(1)
+
         player.s.drainRate = new Decimal(1)
         if (hasUpgrade("t", 23)) player.s.drainRate = player.s.drainRate.mul(5)
 
@@ -60,8 +64,8 @@ addLayer("s", {
             .mul(upgradeEffect("t", 22))
 
         //shard multiplier on replicanti speed
-        player.s.multiplier = Decimal.log10(player.s.best.plus(1).pow(player.s.mulFormulaPow).pow(player.s.meterEff4)).plus(1)
-        if (hasUpgrade("t", 11)) player.s.multiplier = Decimal.log10(player.s.total.plus(1).pow(player.s.mulFormulaPow)).plus(1).pow(player.s.meterEff4)
+        player.s.multiplier = Decimal.log10(player.s.best.plus(1).pow(player.s.mulFormulaPow).pow_base(player.s.shardEffPowBaseChall).pow(player.s.meterEff4)).plus(1)
+        if (hasUpgrade("t", 11)) player.s.multiplier = Decimal.log10(player.s.total.plus(1).pow_base(player.s.shardEffPowBaseChall).pow(player.s.mulFormulaPow)).plus(1).pow(player.s.meterEff4)
         player.s.gainExponent = new Decimal(0.4)
             .plus(buyableEffect("r", 21))
         player.s.rsMultiplier = player.s.multiplier.pow(0.5)
