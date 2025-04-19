@@ -59,7 +59,15 @@ function setGridData(layer, id, data) {
 }
 
 function upgradeEffect(layer, id) {
-	return (tmp[layer].upgrades[id].effect)
+	if (hasUpgrade(layer, id)) {
+		return (tmp[layer].upgrades[id].effect)
+	} return new Decimal(1)
+}
+
+function additiveUpgradeEffect(layer, id) {
+	if (hasUpgrade(layer, id)) {
+		return (tmp[layer].upgrades[id].effect)
+	} return new Decimal(0)
 }
 
 function challengeEffect(layer, id) {

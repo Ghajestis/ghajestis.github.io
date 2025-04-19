@@ -1,12 +1,13 @@
 let modInfo = {
-	name: "The ??? Tree",
-	author: "nobody",
-	pointsName: "points",
-	modFiles: ["layers/quarks.js", "tree.js"],
+	name: "ReplicantiGame",
+	author: "Ghajestis",
+	pointsName: "Replicanti",
+	modFiles: ["layers/main.js", "layers/replicanti.js", "layers/shards.js", "layers/tesseract.js",
+		"tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (1), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
@@ -25,7 +26,7 @@ let winText = `Congratulations! You have reached the end and beaten this game, b
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything"]
+var doNotCallTheseFunctionsEveryTick = ["tesseractReset"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -41,7 +42,7 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(0)
+	let gain = new Decimal(1)
 	return gain
 }
 

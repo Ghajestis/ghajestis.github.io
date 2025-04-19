@@ -36,3 +36,11 @@
 .overlayText {
 	z-index: 6;
 }
+
+.barMilestone {
+	position: absolute;
+	width: 5px;
+	height: 54px;
+	z-index: 2;
+	background: #39C49C;
+}

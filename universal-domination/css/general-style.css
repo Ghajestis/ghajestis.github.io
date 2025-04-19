@@ -11,7 +11,7 @@ body {
 /* General text */
 h1, h2, h3, b, input {
 	display: inline;
-	font-family: "Lucida Console", "Courier New", monospace
+	font-family: "Lucida Sans Typewriter", monospace;
 }
 
 /* These are styles for different states of components. You can make layer-specific versions with .c.locked, for example */
@@ -20,18 +20,32 @@ h1, h2, h3, b, input {
 	cursor: not-allowed;
 }
 
+.r.locked {
+	border-color: #bf8f8f
+}
+
 /* Can meens can be clicked/bought/etc */
 .can {
 	cursor: pointer;
 }
 
+.r.can {
+	cursor: pointer;
+	background-color: #0f0f0f;
+}
+
 .can:hover {
-	transform: scale(1.15, 1.15);
-	box-shadow: 0 0 20px var(--points)
+	color: #000000 !important;
+	background-color: #1bbb36 !important;
+}
+
+.r.can:hover {
+	background: #1bbb36 !important;
 }
 
 .bought {
-	background-color: #77bf5f;
+	background-color: #77bf5f !important;
+	color: #0f0f0f !important;
 	cursor: default;
 }
 

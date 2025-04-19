@@ -72,6 +72,12 @@ function format(decimal, precision = 2, small) {
 
 }
 
+function pluralize(decimal, term = "n") {
+    decimal = new Decimal(decimal)
+    if (decimal.eq(1)) { return term } 
+    if (decimal.neq(1)) { return term + "s"}
+}
+
 function formatWhole(decimal) {
     decimal = new Decimal(decimal)
     if (decimal.gte(1e9)) return format(decimal, 2)
@@ -80,11 +86,12 @@ function formatWhole(decimal) {
 }
 
 function formatTime(s) {
-    if (s < 60) return format(s) + "s"
-    else if (s < 3600) return formatWhole(Math.floor(s / 60)) + "m " + format(s % 60) + "s"
-    else if (s < 86400) return formatWhole(Math.floor(s / 3600)) + "h " + formatWhole(Math.floor(s / 60) % 60) + "m " + format(s % 60) + "s"
-    else if (s < 31536000) return formatWhole(Math.floor(s / 86400) % 365) + "d " + formatWhole(Math.floor(s / 3600) % 24) + "h " + formatWhole(Math.floor(s / 60) % 60) + "m " + format(s % 60) + "s"
-    else return formatWhole(Math.floor(s / 31536000)) + "y " + formatWhole(Math.floor(s / 86400) % 365) + "d " + formatWhole(Math.floor(s / 3600) % 24) + "h " + formatWhole(Math.floor(s / 60) % 60) + "m " + format(s % 60) + "s"
+    if (s.lte(1000)) return formatSmall(s) + " ms"
+    if (s.lte(60000)) return format(s.div(1000)) + " seconds"
+    else if (s.lte(3600000)) return format(s.div(60000)) + " minutes"
+    else if (s.lte(86400000)) return format(s.div(3600000)) + " hours"
+    else if (s.lte(31536000000)) return format(s.div(86400000)) + " days"
+    else return format(s.div(31536000000)) + " years"
 }
 
 function toPlaces(x, precision, maxAccepted) {

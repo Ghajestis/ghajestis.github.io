@@ -9,6 +9,13 @@ function loadVue() {
 		`
 	})
 
+	Vue.component('display-replicanti-info', {
+		props: ['layer', 'data'],
+		template: `
+			<span class="instant" v-html="data" style="margin:100px"></span>
+		`
+	})
+
 // data = a function returning the content (actually HTML)
 	Vue.component('raw-html', {
 			props: ['layer', 'data'],
@@ -58,6 +65,24 @@ function loadVue() {
 
 	// data = an array of Components to be displayed in a column
 	Vue.component('column', {
+		props: ['layer', 'data'],
+		computed: {
+			key() {return this.$vnode.key}
+		},
+		template: `
+		<div class="upgTable instant">
+			<div class="upgCol">
+				<div v-for="(item, index) in data">
+					<div v-if="!Array.isArray(item)" v-bind:is="item" :layer= "layer" v-bind:style="tmp[layer].componentStyles[item]" :key="key + '-' + index"></div>
+					<div v-else-if="item.length==3" v-bind:style="[tmp[layer].componentStyles[item[0]], (item[2] ? item[2] : {})]" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" :key="key + '-' + index"></div>
+					<div v-else-if="item.length==2" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" v-bind:style="tmp[layer].componentStyles[item[0]]" :key="key + '-' + index"></div>
+				</div>
+			</div>
+		</div>
+		`
+	})
+
+	Vue.component('shard-column', {
 		props: ['layer', 'data'],
 		computed: {
 			key() {return this.$vnode.key}
@@ -237,6 +262,14 @@ function loadVue() {
 		props: ['layer', 'data'],
 		template: `
 		<div><span v-if="player[layer].points.lt('1e1000')">You have </span><h2 v-bind:style="{'color': tmp[layer].color, 'text-shadow': '0px 0px 10px ' + tmp[layer].color}">{{data ? format(player[layer].points, data) : formatWhole(player[layer].points)}}</h2> {{tmp[layer].resource}}<span v-if="layers[layer].effectDescription">, <span v-html="run(layers[layer].effectDescription, layers[layer])"></span></span><br><br></div>
+		`
+	})
+
+	// Replicanti display
+	Vue.component('replicanti-display', {
+		props: ['layer', 'data'],
+		template: `
+		<div><span v-if="player[layer].points.lt('1e1000000000000000000')">You have </span><h2 v-bind:style="{'color': tmp[layer].color, 'text-shadow': '0px 0px 10px ' + tmp[layer].color}">{{data ? format(player[layer].points, data) : formatWhole(player[layer].points)}}</h1> {{tmp[layer].resource}}<span v-if="layers[layer].effectDescription">, <span v-html="run(layers[layer].effectDescription, layers[layer])"></span></span><br><br></div>
 		`
 	})
 
@@ -434,7 +467,7 @@ function loadVue() {
 			currentTab() {return player.subtabs[layer][data]}
 		},
 		template: `
-		<div v-if="tmp[layer].microtabs" :style="{'border-style': 'solid'}">
+		<div v-if="tmp[layer].microtabs" :style="{'padding': '15px'}">
 			<div class="upgTable instant">
 				<tab-buttons :layer="layer" :data="tmp[layer].microtabs[data]" :name="data" v-bind:style="tmp[layer].componentStyles['tab-buttons']"></tab-buttons>
 			</div>
@@ -456,6 +489,27 @@ function loadVue() {
 		<div v-if="tmp[layer].bars && tmp[layer].bars[data].unlocked" v-bind:style="{'position': 'relative'}"><div v-bind:style="[tmp[layer].bars[data].style, style.dims, {'display': 'table'}]">
 			<div class = "overlayTextContainer barBorder" v-bind:style="[tmp[layer].bars[data].borderStyle, style.dims]">
 				<span class = "overlayText" v-bind:style="[tmp[layer].bars[data].style, tmp[layer].bars[data].textStyle]" v-html="run(layers[layer].bars[data].display, layers[layer].bars[data])"></span>
+			</div>
+			<div class ="barBG barBorder" v-bind:style="[tmp[layer].bars[data].style, tmp[layer].bars[data].baseStyle, tmp[layer].bars[data].borderStyle,  style.dims]">
+				<div class ="fill" v-bind:style="[tmp[layer].bars[data].style, tmp[layer].bars[data].fillStyle, style.fillDims]"></div>
+			</div>
+		</div></div>
+		`
+	})
+
+	Vue.component('shard-bar', {
+		props: ['layer', 'data'],
+		computed: {
+			style() {return constructBarStyle(this.layer, this.data)}
+		},
+		template: `
+		<div v-if="tmp[layer].bars && tmp[layer].bars[data].unlocked" v-bind:style="{'position': 'relative'}"><div v-bind:style="[tmp[layer].bars[data].style, style.dims, {'display': 'table'}]">
+			<div class = "overlayTextContainer barBorder" v-bind:style="[tmp[layer].bars[data].borderStyle, style.dims]">
+				<span class = "overlayText" v-bind:style="[tmp[layer].bars[data].style, tmp[layer].bars[data].textStyle]" v-html="run(layers[layer].bars[data].display, layers[layer].bars[data])"></span>
+				<div class="barMilestone" style="left: 10%"></div>
+				<div class="barMilestone" style="left: 40%"></div>
+				<div class="barMilestone" style="left: 56%"></div>
+				<div class="barMilestone" style="left: 99%"></div>
 			</div>
 			<div class ="barBG barBorder" v-bind:style="[tmp[layer].bars[data].style, tmp[layer].bars[data].baseStyle, tmp[layer].bars[data].borderStyle,  style.dims]">
 				<div class ="fill" v-bind:style="[tmp[layer].bars[data].style, tmp[layer].bars[data].fillStyle, style.fillDims]"></div>
@@ -617,6 +671,7 @@ function loadVue() {
 			tmp,
 			options,
 			Decimal,
+			pluralize,
 			format,
 			formatWhole,
 			formatTime,

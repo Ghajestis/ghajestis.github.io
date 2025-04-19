@@ -11,7 +11,7 @@ function getStartOptions() {
 		offlineProd: true,
 		hideChallenges: false,
 		showStory: true,
-		forceOneTab: false,
+		forceOneTab: true,
 		oldStyle: false,
 		forceTooltips: true,
 		hideMilestonePopups: false,

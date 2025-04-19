@@ -1,8 +1,8 @@
 * {
 	transition-duration: 0.5s;
 	text-align: center;
-	font-family: "Inconsolata", monospace;
-	font-weight: bold;
+	font-family: "Lucida Sans Typewriter", monospace;
+	font-weight: normal;
 	table-align: center;
 	margin: auto;
 	-webkit-text-size-adjust: none;
@@ -31,6 +31,7 @@ td {
 	align-items: center;
 	max-width: 100%;
 	margin: 0 auto;
+	vertical-align: middle;
 }
 
 .upgRow {
@@ -40,6 +41,7 @@ td {
 	align-items: center;
 	max-width: 100%;
 	margin: 0 auto;
+	vertical-align: middle;
 }
 
 .upgAlign {
@@ -55,11 +57,23 @@ td {
 	vertical-align: middle;
 }
 
+.replicantiDisp {
+	text-align: justify;
+}
+
 .can.upg:hover {
 	z-index: 2
 }
 
 .can.buyable:hover {
+	z-index: 2
+}
+
+.r.can.upg:hover {
+	z-index: 2
+}
+
+.r.can.buyable:hover {
 	z-index: 2
 }
 
@@ -244,8 +258,8 @@ button > * {
 }
 
 .noBackground {
-	background: transparent !important;
+	/* background: transparent !important;
 	background-image: none !important;
-	--background: transparent !important;
+	--background: transparent !important; */
 }
 
