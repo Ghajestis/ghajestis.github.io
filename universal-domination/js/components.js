@@ -75,6 +75,25 @@ function loadVue() {
 		`
 	})
 
+	// Functionally the same as a normal column, but I want different css properties
+	Vue.component('manifold-column', {
+		props: ['layer', 'data'],
+		computed: {
+			key() {return this.$vnode.key}
+		},
+		template: `
+		<div class="manifoldUpgTable instant">
+			<div class="upgCol">
+				<div v-for="(item, index) in data">
+					<div v-if="!Array.isArray(item)" v-bind:is="item" :layer= "layer" v-bind:style="tmp[layer].componentStyles[item]" :key="key + '-' + index"></div>
+					<div v-else-if="item.length==3" v-bind:style="[tmp[layer].componentStyles[item[0]], (item[2] ? item[2] : {})]" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" :key="key + '-' + index"></div>
+					<div v-else-if="item.length==2" v-bind:is="item[0]" :layer= "layer" :data= "item[1]" v-bind:style="tmp[layer].componentStyles[item[0]]" :key="key + '-' + index"></div>
+				</div>
+			</div>
+		</div>
+		`
+	})
+
 	// data [other layer, tabformat for within proxy]
 	Vue.component('layer-proxy', {
 		props: ['layer', 'data'],

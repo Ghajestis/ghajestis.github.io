@@ -1,8 +1,10 @@
 let modInfo = {
-	name: "The ??? Tree",
-	author: "nobody",
-	pointsName: "points",
-	modFiles: ["layers/quarks.js", "tree.js"],
+	name: "Universal Domination",
+	author: "Ghajestis",
+	pointsName: "Quarks",
+	modFiles: ["layers/quarks.js", "tree.js", "layers/main.js", "layers/achievements.js", "layers/automation.js",
+		"layers/manifold/manifold.js", "layers/manifold/exotic-matter.js", // Big Rip
+	],
 
 	discordName: "",
 	discordLink: "",
@@ -12,8 +14,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "a0.1",
+	name: "Manifold Beginnings",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -21,7 +23,7 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Added things.<br>
 		- Added stuff.`
 
-let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+let winText = `You have grown too powerful for this universe... For now.`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -55,7 +57,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.m.points.gte("1.8e308")
 }
 
 

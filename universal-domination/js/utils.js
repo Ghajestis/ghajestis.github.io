@@ -410,3 +410,10 @@ function gridRun(layer, func, data, id) {
 	else
 		return layers[layer].grid[func];
 }
+
+// Pluralize inputted text based on a value, returns string
+function pluralize(str = String, val = Object) {
+	// if (!val.mag) throw new error("Did not import number in pluralize function")
+
+	if (val.neq(1)) return str + "s"; else return str
+}

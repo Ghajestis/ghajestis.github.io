@@ -7,7 +7,7 @@
 	border-radius: 50%;
 	box-shadow: var(--hqProperty2a), var(--hqProperty2b);
 	font-size: 40px;
-	font-family: "Lucida Console", "Courier New", monospace;
+	font-family: "Lucida Sans Typewriter", "Lucida Sans Typewriter", monospace;
 	color: rgba(0, 0, 0, 0.5);
 	text-shadow: var(--hqProperty3);
 	padding: 0;
@@ -27,7 +27,7 @@
 	border-radius: 33%;
 	box-shadow: var(--hqProperty2a), var(--hqProperty2b);
 	font-size: 40px;
-	font-family: "Lucida Console", "Courier New", monospace;
+	font-family: "Lucida Sans Typewriter", "Lucida Sans Typewriter", monospace;
 	color: rgba(0, 0, 0, 0.5);
 	text-shadow: var(--hqProperty3);
 	padding: 0;

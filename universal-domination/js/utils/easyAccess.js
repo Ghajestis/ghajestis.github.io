@@ -58,8 +58,10 @@ function setGridData(layer, id, data) {
 	player[layer].grid[id] = data
 }
 
-function upgradeEffect(layer, id) {
-	return (tmp[layer].upgrades[id].effect)
+function upgradeEffect(layer, id, isAdditive = Boolean) {
+	if (hasUpgrade(layer, id)) return (tmp[layer].upgrades[id].effect)
+	if (isAdditive) return new Decimal(0)
+	return new Decimal(1)
 }
 
 function challengeEffect(layer, id) {
