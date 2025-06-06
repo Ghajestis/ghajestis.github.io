@@ -1,0 +1,21 @@
+- Refactored entire project
+- Fixed a bug that caused generators to always buy 10 when above 10 purchases
+- Fixed a bug that caused generator costs to display as zero when you can't afford them
+- Quarks are now appropriately called Quarks on their display
+- Combustors are now called Accelerators
+- Accelerators now provide a flat (×1.100) multiplier to all generators
+- Fixed a bug that allowed you to phase shift multiple times at once
+- Fixed the above bug again because apparently it wasn't actually fixed
+- Fixed a bug that caused you to NaN when buying max right as you hit cost scaling (thanks escapee!)
+- Added Big Rip, Manifold Generators, Manifold Challenges, Strange and Charmed Matter, and Achievements
+- Reworked the layout of the game
+
+- Endgame is reaching 1.8e308 Manifolds (Supernova Requirement)
+(Stellar Remnant formula will be 5^(log10(x)/308). It should be difficult to get more than e600 Manifolds.)
+
+KNOWN ISSUES:
+Atoms reset to zero in Respecialized Advancements if you attempt to purchase more than 4. This is due to the buy max
+code for Atoms, which doesn't account for the edge case of being in this challenge. I do not know if it actually
+makes the challenge impossible.
+Residual Annihilation actually raises Intensities ^2.05 instead of 1.05, and somehow the game is balanced despite that.
+CBA to deal with this right now - My thought is I can buff its intended effect slightly and then buff Destructive Returns's effect
