@@ -76,8 +76,8 @@ function clickableEffect(layer, id) {
 	return (tmp[layer].clickables[id].effect)
 }
 
-function achievementEffect(layer, id) {
-	return (tmp[layer].achievements[id].effect)
+function achievementEffect(id) {
+	return (tmp["ach"].achievements[id].effect)
 }
 
 function gridEffect(layer, id) {

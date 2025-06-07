@@ -17,52 +17,60 @@ addLayer("ach", {
             // "is this x" meme format with AD icon
             name: "Is this antimatter?",
             done() { return player.q.generators[0].purchased.gte(1) },
-            tooltip: "Buy a 1st Quark Generator.",
-            unlocked() { return true }
+            tooltip: "Buy a 1st Quark Generator.<br><i>Reward: First Quark Generator is 10 times cheaper",
+            unlocked() { return true },
+            effect() { return hasAchievement(this.layer, this.id) ? new Decimal(10) : new Decimal(1) }
         },
         12: {
             // "screenshot of the first generator with the buy 10 button having another generator inside it"
             name: "Generating Generation",
             done() { return player.q.generators[1].purchased.gte(1) },
-            tooltip: "Buy a 2nd Quark Generator.",
+            tooltip: "Buy a 2nd Quark Generator.<br><i>Reward: First Quark Generator produces 10 times faster",
             unlocked() { return true },
+            effect() { return hasAchievement(this.layer, this.id) ? new Decimal(10) : new Decimal(1) }
         },
         13: {
             name: "Third time's the charm",
             done() { return player.q.generators[2].purchased.gte(1) },
-            tooltip: "Buy a 3rd Quark Generator.",
+            tooltip: "Buy a 3rd Quark Generator.<br><i>Reward: Second Quark Generator produces 10 times faster",
             unlocked() { return true },
+            effect() { return hasAchievement(this.layer, this.id) ? new Decimal(10) : new Decimal(1) }
         },
         14: {
             name: "???",
             done() { return player.q.generators[3].purchased.gte(1) },
-            tooltip: "Buy a 4th Quark Generator.",
+            tooltip: "Buy a 4th Quark Generator.<br><i>Reward: Third Quark Generator produces 10 times faster",
             unlocked() { return true },
+            effect() { return hasAchievement(this.layer, this.id) ? new Decimal(10) : new Decimal(1) }
         },
         15: {
             name: "???",
             done() { return player.q.generators[4].purchased.gte(1) },
-            tooltip: "Buy a 5th Quark Generator.",
+            tooltip: "Buy a 5th Quark Generator.<br><i>Reward: Fourth Quark Generator produces 10 times faster",
             unlocked() { return true },
+            effect() { return hasAchievement(this.layer, this.id) ? new Decimal(10) : new Decimal(1) }
         },
         16: {
             name: "???",
             done() { return player.q.generators[5].purchased.gte(1) },
-            tooltip: "Buy a 6th Quark Generator.",
+            tooltip: "Buy a 6th Quark Generator.<br><i>Reward: Fifth Quark Generator produces 10 times faster",
             unlocked() { return true },
+            effect() { return hasAchievement(this.layer, this.id) ? new Decimal(10) : new Decimal(1) }
         },
         17: {
             // Image idea: literally just an image of uranus
             name: "Lucky number 7",
             done() { return player.q.generators[6].purchased.gte(1) },
-            tooltip: "Buy a 7th Quark Generator.",
+            tooltip: "Buy a 7th Quark Generator.<br><i>Reward: Sixth Quark Generator produces 10 times faster",
             unlocked() { return true },
+            effect() { return hasAchievement(this.layer, this.id) ? new Decimal(10) : new Decimal(1) }
         },
         18: {
             name: "I'm not gonna say it",
             done() { return player.q.generators[7].purchased.gte(1) },
-            tooltip: "Buy an 8th Quark Generator.",
+            tooltip: "Buy an 8th Quark Generator.<br><i>Reward: Seventh Quark Generator produces 10 times faster",
             unlocked() { return true },
+            effect() { return hasAchievement(this.layer, this.id) ? new Decimal(10) : new Decimal(1) }
         },
         21: {
             name: "RIPPED",

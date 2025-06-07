@@ -79,7 +79,7 @@ addLayer("m", {
         },
 
         commonMGMultiplier() {return new inChallenge("m", 32) ? 
-            new Decimal(1).mul(buyableEffect("m", 204)).mul(buyableEffect("em", 24))
+            new Decimal(1).mul(buyableEffect("m", 204)).mul(player.em.perfect.pow(buyableEffect("em", 24)))
             : new Decimal(0)
         },
 
@@ -336,9 +336,6 @@ addLayer("m", {
                 let x = player.m.resets.max(1)
                 return new Decimal(4).pow(Decimal.log(x, 3)).pow(1.25)
             },
-            onPurchase() {
-                player.m.points = player.m.points.sub(this.cost)
-            }
         },
         12: {
             cost: new Decimal(1),
@@ -416,7 +413,7 @@ addLayer("m", {
         23: {
             cost: new Decimal(10),
             fullDisplay() {
-                return `<h3>The Atom multiplier becomes ×10
+                return `<h3>The Atom multiplier becomes ×20
                 <br>Costs: ${formatWhole(this.cost)} Manifolds`
             },
             canAfford() {

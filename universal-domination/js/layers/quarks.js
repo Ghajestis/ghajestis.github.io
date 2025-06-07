@@ -43,6 +43,7 @@ addLayer("q", {
             intensity() { return buyableEffect("q", "120").mul(tmp.q.values.phaseIntensityMult.pow(player.q.generators[0].phases))
                 .mul(tmp.q.values.atomMult[0])
                 .mul(challengeCompletions("m", 21) >= 1 ? challengeEffect("m", 21) : new Decimal(1) )
+                .mul(achievementEffect(12))
 
                 .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "110") ? 1 : 0.75)
@@ -54,6 +55,7 @@ addLayer("q", {
             unlocked() { return true },
             intensity() { return buyableEffect("q", "121").mul(tmp.q.values.phaseIntensityMult.pow(player.q.generators[1].phases))
                 .mul(tmp.q.values.atomMult[1])
+                .mul(achievementEffect(13))
 
                 .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "111") ? 1 : 0.75)
@@ -65,6 +67,7 @@ addLayer("q", {
             unlocked() { return true },
             intensity() { return buyableEffect("q", "122").mul(tmp.q.values.phaseIntensityMult.pow(player.q.generators[2].phases)) 
                 .mul(tmp.q.values.atomMult[2])
+                .mul(achievementEffect(14))
 
                 .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "112") ? 1 : 0.75)
@@ -79,6 +82,7 @@ addLayer("q", {
                 return buyableEffect("q", "123")
                     .mul(tmp.q.values.phaseIntensityMult.pow(player.q.generators[3].phases)) 
                     .mul(tmp.q.values.atomMult[3])
+                    .mul(achievementEffect(15))
 
                     .pow(tmp.q.values.commonGeneratorPower)
                     .pow((inChallenge("m", 31) && player.q.latestPurchased == "113") ? 1 : 0.75)
@@ -94,6 +98,7 @@ addLayer("q", {
             },
             intensity() { return buyableEffect("q", "124").mul(tmp.q.values.phaseIntensityMult.pow(player.q.generators[4].phases)) 
                 .mul(tmp.q.values.atomMult[4])
+                .mul(achievementEffect(16))
 
                 .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "114") ? 1 : 0.75)
@@ -109,6 +114,7 @@ addLayer("q", {
             },
             intensity() { return buyableEffect("q", "125").mul(tmp.q.values.phaseIntensityMult.pow(player.q.generators[5].phases)) 
                 .mul(tmp.q.values.atomMult[5])
+                .mul(achievementEffect(17))
 
                 .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "115") ? 1 : 0.75)
@@ -122,6 +128,7 @@ addLayer("q", {
             },
             intensity() { return buyableEffect("q", "126").mul(tmp.q.values.phaseIntensityMult.pow(player.q.generators[6].phases)) 
                 .mul(tmp.q.values.atomMult[6])
+                .mul(achievementEffect(18))
 
                 .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "116") ? 1 : 0.75)
@@ -173,7 +180,7 @@ addLayer("q", {
                 variableMult = variableMult.mul(challengeEffect("m", 11))
             }
             
-            return new Decimal(2)
+            return new Decimal(5)
             .plus(upgradeEffect("m", 23))
             .mul(variableMult)
             .mul(new Decimal(1).plus(tmp.em.values.strangeMatterEffect.div(100)))
@@ -390,7 +397,7 @@ addLayer("q", {
                 },
                 buy() {
                     if (inChallenge("m", 13)) {player.m.manifoldChal3_productionPower = new Decimal(0)}
-                    if (this.canPhase() && tmp.q.generators[id].interval.lte(tmp.q.intervalCap)) {
+                    if (this.canPhase() || tmp.q.generators[id].interval.lte(tmp.q.intervalCap)) {
                         player.q.generators[id].phases = player.q.generators[id].phases.plus(1)
                         tmp.q.generators[id].interval = new Decimal(10000)
                     } else {

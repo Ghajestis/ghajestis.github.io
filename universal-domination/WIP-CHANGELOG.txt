@@ -19,3 +19,10 @@ code for Atoms, which doesn't account for the edge case of being in this challen
 makes the challenge impossible.
 Residual Annihilation actually raises Intensities ^2.05 instead of 1.05, and somehow the game is balanced despite that.
 CBA to deal with this right now - My thought is I can buff its intended effect slightly and then buff Destructive Returns's effect
+
+a0.11 - Emergency Bug Squash and Balance Hotfix
+- Fixed a bug that allowed you to continue purchasing Interval upgrades even when the Phase Shift prompt was visible.
+- Fixed a bug that caused Manifold Generators to be stuck at a ×0 multiplier
+- Added rewards for Achievements 11-18
+- The base Atom multiplier is now ×5
+- Manifold Upgrade 23 buffed from ×10 → ×20
