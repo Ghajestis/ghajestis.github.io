@@ -45,7 +45,6 @@ addLayer("q", {
                 .mul(challengeCompletions("m", 21) >= 1 ? challengeEffect("m", 21) : new Decimal(1) )
                 .mul(achievementEffect(12))
 
-                .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "110") ? 1 : 0.75)
             },
             interval() { return buyableEffect("q", "100").max(tmp.q.values.intervalCap) },
@@ -57,7 +56,6 @@ addLayer("q", {
                 .mul(tmp.q.values.atomMult[1])
                 .mul(achievementEffect(13))
 
-                .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "111") ? 1 : 0.75)
             },
             interval() { return buyableEffect("q", "101").max(tmp.q.values.intervalCap) },
@@ -69,7 +67,6 @@ addLayer("q", {
                 .mul(tmp.q.values.atomMult[2])
                 .mul(achievementEffect(14))
 
-                .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "112") ? 1 : 0.75)
             },
             interval() { return buyableEffect("q", "102").max(tmp.q.values.intervalCap) },
@@ -84,7 +81,6 @@ addLayer("q", {
                     .mul(tmp.q.values.atomMult[3])
                     .mul(achievementEffect(15))
 
-                    .pow(tmp.q.values.commonGeneratorPower)
                     .pow((inChallenge("m", 31) && player.q.latestPurchased == "113") ? 1 : 0.75)
             },
             interval() { return buyableEffect("q", "103").max(tmp.q.values.intervalCap) },
@@ -100,7 +96,6 @@ addLayer("q", {
                 .mul(tmp.q.values.atomMult[4])
                 .mul(achievementEffect(16))
 
-                .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "114") ? 1 : 0.75)
             },
             interval() { return buyableEffect("q", "104").max(tmp.q.values.intervalCap) },
@@ -116,7 +111,6 @@ addLayer("q", {
                 .mul(tmp.q.values.atomMult[5])
                 .mul(achievementEffect(17))
 
-                .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "115") ? 1 : 0.75)
             },
             interval() { return buyableEffect("q", "105").max(tmp.q.values.intervalCap) },
@@ -130,7 +124,6 @@ addLayer("q", {
                 .mul(tmp.q.values.atomMult[6])
                 .mul(achievementEffect(18))
 
-                .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "116") ? 1 : 0.75)
             },
             interval() { return buyableEffect("q", "106").max(tmp.q.values.intervalCap) },
@@ -144,7 +137,6 @@ addLayer("q", {
                 .mul(upgradeEffect("m", 31, false))
                 .mul(tmp.q.values.atomMult[7])
 
-                .pow(tmp.q.values.commonGeneratorPower)
                 .pow((inChallenge("m", 31) && player.q.latestPurchased == "117") ? 1 : 0.75)
             },
             interval() { return buyableEffect("q", "107").max(tmp.q.values.intervalCap) },
@@ -152,8 +144,15 @@ addLayer("q", {
     ],
 
     values: {
-        intervalMul() {return new Decimal(1).div(new Decimal(1.25)
+        intervalMul() {
+            let ach28_reward = new Decimal(0)
+            if (hasAchievement("ach", 28)) {
+                ach28_reward = achievementEffect(28)
+            }
+            
+            return new Decimal(1).div(new Decimal(1.25)
             .plus(upgradeEffect("m", 24, true))
+            .plus(ach28_reward)
         )},
         buy10Mul() {
             let variableAdd = new Decimal(0)
@@ -161,6 +160,7 @@ addLayer("q", {
             
             return new Decimal(2).plus(upgradeEffect("m", 14, true))
                 .plus(variableAdd)
+                .plus(tmp.spaceGenerators.values.cosmicEnergyEffect)
         },
         combustorPower() {return new Decimal(1.1).plus(upgradeEffect("m", 21, true))},
         intensityMul() {
@@ -204,7 +204,7 @@ addLayer("q", {
 /* 1 */     tmp.q.values.atomStrength.pow(player.q.atoms.sub(0)),
 /* 2 */     tmp.q.values.atomStrength.pow(player.q.atoms.sub(1).max(0)),
 /* 3 */     tmp.q.values.atomStrength.pow(player.q.atoms.sub(2).max(0)),
-/* 4 */     tmp.q.values.atomStrength.pow(player.q.atoms.sub(3).max(0)).pow(this.manifoldChal1_AtomPow),
+/* 4 */     tmp.q.values.atomStrength.pow(player.q.atoms.sub(3).max(0)).pow(this.manifoldChal1_AtomPow()),
 /* 5 */     tmp.q.values.atomStrength.pow(player.q.atoms.sub(4).max(0)),
 /* 6 */     tmp.q.values.atomStrength.pow(player.q.atoms.sub(5).max(0)),
 /* 7 */     tmp.q.values.atomStrength.pow(player.q.atoms.sub(6).max(0)),
@@ -243,7 +243,7 @@ addLayer("q", {
             let variableMult = new Decimal(1)
 
             if (challengeCompletions("m", 31) >= 1) {
-                variableMult = variableMult.plus(1.05)
+                variableMult = variableMult.plus(0.05)
             }
 
             return variableMult
@@ -316,6 +316,7 @@ addLayer("q", {
                 .mul(tmp.q.generators[id + 1].intensity)
                 .mul(tmp.q.values.commonGeneratorMultiplier)
                 .mul(buyableEffect("q", "11" + (id + 1)))
+                .pow(tmp.q.values.commonGeneratorPower)
                 .mul(diff))
             )
             tmp.q.generators[id].intensity = tmp.q.generators[id].intensity.mul(tmp.q.values.atomMult[id])
@@ -386,7 +387,7 @@ addLayer("q", {
                     let l = this.purchasesLeft()
                     return l.gt(0) ? `
                         <h3>Interval: ${formatSmall(tmp.q.generators[id].interval)}ms (Δ${formatWhole(p)})
-                        <br>→ ${formatSmall(tmp.q.generators[id].interval.mul(tmp.q.values.intervalMul))}ms Costs: ${format(this.cost())} Quarks
+                        <br>→ ${formatSmall(tmp.q.generators[id].interval.mul(tmp.q.values.intervalMul).clampMin(tmp.q.values.intervalCap))}ms Costs: ${format(this.cost())} Quarks
                     ` : 
                     `<h3>Δ Phase Shift
                     <br><br>${format(tmp.q.generators[id].interval)}ms → ${format(tmp.q.generators[id].interval.mul(tmp.q.values.phaseIntervalMult))}ms
@@ -499,7 +500,7 @@ addLayer("q", {
                     return x.mul(x10)
                 },
                 tooltip() {
-                    return inChallenge("m", 22) ? "Purchases capped at 1 by Capital Tradeoff" : `${formatWhole(getBuyableAmount(this.layer, this.id))} Purchases`
+                    return inChallenge("m", 22) ? "Purchases capped at 1 by Capital Tradeoff" : `${formatWhole(player.q.generators[id].purchased)} Purchases`
                 }
             },
             buyables["12" + id] = {
@@ -763,6 +764,7 @@ addLayer("q", {
                                 let mult = player.q.generators[0].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul)
                                     .mul(tmp.q.generators[0].intensity)
                                     .mul(tmp.q.values.commonGeneratorMultiplier)
+                                    .pow(tmp.q.values.commonGeneratorPower)
                                 return `<h5>×${format(mult)} | ${format(player.q.generators[0].purchased)}` 
                             }
                         ],
@@ -780,6 +782,7 @@ addLayer("q", {
                                 let mult = player.q.generators[1].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul)
                                     .mul(tmp.q.generators[1].intensity)
                                     .mul(tmp.q.values.commonGeneratorMultiplier)
+                                    .pow(tmp.q.values.commonGeneratorPower)
                                 return `<h5>×${format(mult)} | ${format(player.q.generators[1].purchased)}` 
                             }
                         ],
@@ -797,6 +800,7 @@ addLayer("q", {
                                 let mult = player.q.generators[2].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul)
                                     .mul(tmp.q.generators[2].intensity)
                                     .mul(tmp.q.values.commonGeneratorMultiplier)
+                                    .pow(tmp.q.values.commonGeneratorPower)
                                 return `<h5>×${format(mult)} | ${format(player.q.generators[2].purchased)}` 
                             }
                         ],
@@ -814,6 +818,7 @@ addLayer("q", {
                                 let mult = player.q.generators[3].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul)
                                     .mul(tmp.q.generators[3].intensity)
                                     .mul(tmp.q.values.commonGeneratorMultiplier)
+                                    .pow(tmp.q.values.commonGeneratorPower)
                                 return `<h5>×${format(mult)} | ${format(player.q.generators[3].purchased)}` 
                             }
                         ],
@@ -827,7 +832,7 @@ addLayer("q", {
                             `<h3>5th Quark Generator (${formatWhole(getBuyableAmount("q", 114))})`
                         ],
                         // player.q.generators[4].purchased.div(10).floor().pow_base(player.q.buy10Mul).mul(player.q.generators[4].intensity).mul(player.q.commonGeneratorMultiplier)
-                        ["display-text", `<h5>×${format(player.q.generators[4].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul).mul(tmp.q.generators[4].intensity).mul(tmp.q.values.commonGeneratorMultiplier))} | ${format(player.q.generators[4].purchased)}`],
+                        ["display-text", `<h5>×${format(player.q.generators[4].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul).mul(tmp.q.generators[4].intensity).mul(tmp.q.values.commonGeneratorMultiplier).pow(tmp.q.values.commonGeneratorPower))} | ${format(player.q.generators[4].purchased)}`],
                         ["row", [["buyable", [104]], ["buyable", [114]], ["buyable", [124]]]],
                         ["row", [["clickable", [214]], ["clickable", [224]], ["clickable", [234]]]],
                     ],
@@ -837,7 +842,7 @@ addLayer("q", {
                         ["display-text", 
                             `<h3>6th Quark Generator (${formatWhole(getBuyableAmount("q", 115))})`
                         ],
-                        ["display-text", `<h5>×${format(player.q.generators[5].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul).mul(tmp.q.generators[5].intensity).mul(tmp.q.values.commonGeneratorMultiplier))} | ${format(player.q.generators[5].purchased)}`],
+                        ["display-text", `<h5>×${format(player.q.generators[5].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul).mul(tmp.q.generators[5].intensity).mul(tmp.q.values.commonGeneratorMultiplier).pow(tmp.q.values.commonGeneratorPower))} | ${format(player.q.generators[5].purchased)}`],
                         ["row", [["buyable", [105]], ["buyable", [115]], ["buyable", [125]]]],
                         ["row", [["clickable", [215]], ["clickable", [225]], ["clickable", [235]]]],
                     ],
@@ -847,7 +852,7 @@ addLayer("q", {
                         ["display-text", 
                             `<h3>7th Quark Generator (${formatWhole(getBuyableAmount("q", 116))})`
                         ],
-                        ["display-text", `<h5>×${format(player.q.generators[6].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul).mul(tmp.q.generators[6].intensity).mul(tmp.q.values.commonGeneratorMultiplier))} | ${format(player.q.generators[6].purchased)}`],
+                        ["display-text", `<h5>×${format(player.q.generators[6].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul).mul(tmp.q.generators[6].intensity).mul(tmp.q.values.commonGeneratorMultiplier).pow(tmp.q.values.commonGeneratorPower))} | ${format(player.q.generators[6].purchased)}`],
                         ["row", [["buyable", [106]], ["buyable", [116]], ["buyable", [126]]]],
                         ["row", [["clickable", [216]], ["clickable", [226]], ["clickable", [236]]]],
                     ],
@@ -857,7 +862,7 @@ addLayer("q", {
                         ["display-text", 
                             `<h3>8th Quark Generator (${formatWhole(getBuyableAmount("q", 117))})`
                         ],
-                        ["display-text", `<h5>×${format(player.q.generators[7].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul).mul(tmp.q.generators[7].intensity).mul(tmp.q.values.commonGeneratorMultiplier))} | ${format(player.q.generators[7].purchased)}`],
+                        ["display-text", `<h5>×${format(player.q.generators[7].purchased.div(10).floor().pow_base(tmp.q.values.buy10Mul).mul(tmp.q.generators[7].intensity).mul(tmp.q.values.commonGeneratorMultiplier).pow(tmp.q.values.commonGeneratorPower))} | ${format(player.q.generators[7].purchased)}`],
                         ["row", [["buyable", [107]], ["buyable", [117]], ["buyable", [127]]]],
                         ["row", [["clickable", [217]], ["clickable", [227]], ["clickable", [237]]]],
                     ],
@@ -874,6 +879,7 @@ addLayer("q", {
         "Manifold Generators": {
             content: [
                 ["layer-proxy", ["m", [
+                    ["clickable", [11]],
                     ["manifold-column", 
                         [
                             ["display-text", function() {
@@ -939,8 +945,13 @@ addLayer("q", {
                                 ]
                             ],
                         ]
-                    ]
-                ]]
+                    ],
+                    "blank",
+                    ["display-text", "The costs for Manifold Generators jump at 300 purchases, and start increasing much more steeply past 3000 purchases."],
+                    ["display-text", "All Manifold Generators cannot be purchased past TBD purchases."],
+                    "blank",
+                
+                ]],
             ]],
             buttonStyle: {
                 "margin-top":"15px",
@@ -948,6 +959,9 @@ addLayer("q", {
             unlocked() {
                 return player.m.resets.gte(1)
             }
+        },
+        "Space Generators": {
+            embedLayer: "spaceGenerators",
         }
     },
 

@@ -73,6 +73,8 @@ addLayer("ach", {
             effect() { return hasAchievement(this.layer, this.id) ? new Decimal(10) : new Decimal(1) }
         },
         21: {
+            // evil crunchy cat (image of crunchy cat with colors inverted)
+            // rippy cat
             name: "RIPPED",
             done() { return player.m.resets.gte(1)},
             tooltip: "Big Rip. <br><i>Reward: Start every reset with 100 Quarks, and unlock Automation",
@@ -128,22 +130,50 @@ addLayer("ach", {
             tooltip: "Complete Manifold Challenges 1-7 twice. <br><i>Reward: You can now complete Manifold Challenge 9"
         },
         28: {
+            // No image
             name: "THIS ACHIEVEMENT DOESN'T EXIST",
-            done() { return player.points.gte("9.99e9999") },
-            tooltip: `Have ${format(new Decimal("9.99e9999"))} Quarks.`
+            done() { return player.points.gte("9.99e99999") },
+            tooltip() {
+                return `Have ${format(new Decimal("9.99e99999"))} Quarks.<br><i>Reward: For every power of ${format("9.99e999")} Quarks you have, increase the Interval Divisor by +0.00009<br>Currently: +${format(this.effect(), 4)}`
+            },
+            effect() {
+                return player.points.log("9.99e999").mul(0.00009)
+            }
         },
         31: {
             // krillin
             name: "I can taste that",
-            done() { return false
-            },
+            done() { return player.m.manifoldConversionRate.gte(1) },
             tooltip: "Have the Manifold Power conversion rate be greater than 1."
         },
         32: {
             // some strange image of grillmaster: 76
             name: "Love the smell of particle annihilation in the morning",
             done() { return false },
-            tooltip: "Annihilate your Strange and Charmed matter."
+            tooltip: `Annihilate your Strange and Charmed matter.<br><i>Reward: Strange and Charmed Matter Factors ×2 under ${format(1e30)}`
+        },
+        33: {
+            // thanos
+            name: "Perfectly balanced, as all things should be",
+            done() { return false },
+            tooltip: `Have ~${format("1.00e6969")} Strange and Charmed Matter.<br><i>Reward: The Factor softcap for Strange and Charmed Matter is slightly weaker`
+        },
+        34: {
+            // dragon ball goku lying on the ground after being shot through the chest by piccolo meme
+            name: "Do you enjoy pain?",
+            done() { return false },
+            tooltip: `Big rip with ${format("2.22e22222")} Quarks while inside Vapid Continuum, with no Interval or Intensity upgrades, and no Atoms.`
+        },
+        35: {
+            // some 2000s meme, probably relating to leetspeak
+            name: "Can I Haz m4n1f0ldz?",
+            done() { return player.m.points.gte("1e1337")},
+            tooltip: `Have ${format("1.00e1337")} Manifolds. <br><i>Reward: The Manifold formula is slightly improved (x/308 → x/300)`
+        },
+        38: {
+            name: "From the ashes...",
+            done() { return false },
+            tooltip: `Go Supernova.<br><i>Reward: Manifold gain is multiplied by ${formatWhole(4)}`
         },
     },
 

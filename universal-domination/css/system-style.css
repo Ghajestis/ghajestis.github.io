@@ -81,8 +81,10 @@ td {
 	background-color: transparent;
 	border: 1px solid transparent;
 	color: var(--color);
-	font-size: 40px;
+	font-size: 0px;
 	cursor: pointer;
+	max-width: 0px;
+	max-height: 0px;
 }
 
 .other-back {
@@ -256,7 +258,5 @@ button > * {
 
 .noBackground {
 	background: transparent !important;
-	background-image: none !important;
-	--background: transparent !important;
 }
 

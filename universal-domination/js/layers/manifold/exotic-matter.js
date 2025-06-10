@@ -14,6 +14,9 @@ addLayer("em", {
 
             strangeMatter_Paused: true,
             charmedMatter_Paused: true,
+
+            strangeAutopauseMode: "Do not pause",
+            charmedAutopauseMode: "Do not pause",
         }
 
         return data
@@ -28,12 +31,12 @@ addLayer("em", {
 
         strangeMatterFactor() {
             return player.points.clampMin(1).log(tmp.em.values.exoticMatterFormulaeScaling).clampMin(1).log(tmp.em.values.exoticMatterFormulaeScaling).div(2).clampMin(1)
-            .root(player.em.strange.log10().div(1000).clampMin(1))
+            .root(player.em.strange.log10().div(500).sub(1).clampMin(1))
         },
 
         charmedMatterFactor() {
             return player.q.atoms.clampMin(1).log(tmp.em.values.exoticMatterFormulaeScaling).clampMin(1)
-            .root(player.em.charmed.log10().div(1000).clampMin(1))
+            .root(player.em.charmed.log10().div(500).sub(1).clampMin(1))
         },
 
         charmedMatterEffect() {
@@ -67,6 +70,20 @@ addLayer("em", {
 
         if (!player.em.strangeMatter_Paused) {
             player.em.strange = player.em.strange.mul(tmp.em.values.strangeMatterFactor.pow(diff))
+        }
+    },
+
+    automate() {
+        // Strange Matter autopause
+        if (player.em.strangeAutopauseMode == "When SM > CM" && (player.em.strange.gte(player.em.charmed))) {
+            player.em.strangeMatter_Paused = true
+            if (player.em.strange.lt(player.em.charmed.mul(10).mul(tmp.em.values.strangeMatterFactor))) player.em.strange = player.em.strange.min(player.em.charmed)
+        }
+
+        // Charmed Matter autopause
+        if (player.em.charmedAutopauseMode == "When CM > SM" && (player.em.charmed.gte(player.em.strange))) {
+            player.em.charmedMatter_Paused = true
+            if (player.em.charmed.lt(player.em.strange.mul(10).mul(tmp.em.values.charmedMatterFactor))) player.em.charmed = player.em.charmed.min(player.em.strange)
         }
     },
 
@@ -276,14 +293,17 @@ addLayer("em", {
         },
         103: {
             display() {
-                return `<h3>Annihilate your Strange and Charmed Matter for ${formatWhole(this.gain())} Perfect Matter`
+                let str = `<h3>Annihilate your Strange and Charmed Matter for ${formatWhole(this.gain())} Perfect Matter`
+                if (!this.canClick()) str = str + `<br>(Requires ${format(1e30)} of Both Matters)`
+                return str
             },
             gain() {
-                let sm = player.em.strange.log10().sub(30).clampMin(0)
-                let cm = player.em.charmed.log10().sub(30).clampMin(0)
-                let difference = sm.sub(cm).abs().clampMin("1e-308").recip().pow(0.33)
+                let sm = player.em.strange.clampMin(1).log10().sub(30).clampMin(0)
+                let cm = player.em.charmed.clampMin(1).log10().sub(30).clampMin(0)
+                let value = sm.min(cm)
+                let difference = sm.sub(cm).abs().clampMin("1e-2").recip()
 
-                return sm.plus(cm).div(100).mul(difference).mul(buyableEffect("em", 14)).floor()
+                return value.div(50).mul(difference).mul(buyableEffect("em", 14)).floor()
             },
             canClick() {
                 return this.gain().gte(1)
@@ -319,7 +339,13 @@ addLayer("em", {
                     <h3>each second,<br> based on your Atoms.`
                 }],
                 "blank",
-                ["clickable", [101]]
+                ["row", [
+                    ["clickable", [101]],
+                    ["column", [
+                        ["display-text", "Auto-pause:"],
+                        ["drop-down", ["charmedAutopauseMode", ["Do not pause", "When CM > SM"]]]
+                    ], {"min-width":"200px"}]
+                ]],
             ]],
             ["column", [
                 ["display-text", function() {
@@ -334,7 +360,13 @@ addLayer("em", {
                     <h3>each second,<br> based on your Quarks.`
                 }],
                 "blank",
-                ["clickable", [102]]
+                ["row", [
+                    ["clickable", [102]],
+                    ["column", [
+                        ["display-text", "Auto-pause:"],
+                        ["drop-down", ["strangeAutopauseMode", ["Do not pause", "When SM > CM"]]]
+                    ], {"min-width":"200px"}]
+                ]],
             ]],
         ]],
         ["blank", "100px"],

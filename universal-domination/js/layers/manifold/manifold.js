@@ -117,6 +117,10 @@ addLayer("m", {
 
             return value.pow_base(10)
         },
+
+        manifoldFormulaDivisor() {
+            return new Decimal(308).sub(hasAchievement("ach", 35) ? 8 : 0)
+        }
     },
     
     color: "#12a272",
@@ -162,18 +166,20 @@ addLayer("m", {
 
             // The final four Manifold Generators will be unlocked at the end of Big Rip, so their values
             // Don't particularly matter right now
-            new Decimal(10000),
-            new Decimal(10000),
-            new Decimal(10000),
-            new Decimal(10000),
+            new Decimal(3000),
+            new Decimal(30000),
+            new Decimal(30000),
+            new Decimal(30000),
         ]
         for (const id of [0, 1, 2, 3, 4, 5, 6, 7]) {
             buyables["10" + id] = {
                 cost(x) {
-                    // Worry about cost scaling later.
-                    // I have no idea when/how it should be implemented, so I'll
-                    // Burn that bridge when I get to it
+                    // Purchases begin counting as ×1.5 the actual purchase count past 300 inclusively,
+                    // Causing the prices to jump.
+                    // Each purchase beyond 3000 counts as 4 purchases
                     x = player.m.generators[id].purchased
+                    if (x.gte(300)) { x = x.mul(1.5) }
+                    if (x.gte(4500)) { x = x.sub(4500).mul(4 / 1.5).plus(4500)}
                     let base = baseCosts[id]
                     let mult = costMults[id]
                     return new Decimal(x).pow_base(mult).mul(base)
@@ -188,6 +194,20 @@ addLayer("m", {
                     player.m.points = player.m.points.sub(this.cost())
                     player.m.generators[id].purchased = player.m.generators[id].purchased.plus(1)
                     player.m.generators[id].amount = player.m.generators[id].amount.plus(1)
+                },
+                buyMax() {
+                    let base = baseCosts[id]
+                    let mult = costMults[id]
+
+                    let thresholdOne = player.m.points.div(base).log(mult)
+                    let thresholdTwo = thresholdOne.div(1.5)
+                    let thresholdThree = thresholdTwo.sub(3000).div(4)
+
+                    if (thresholdOne.lte(300)) player.m.generators[id].purchased = thresholdOne.ceil()
+                    if (thresholdTwo.lte(3000) && thresholdOne.gt(300)) player.m.generators[id].purchased = thresholdTwo.ceil()
+                    if (thresholdTwo.gt(3000)) player.m.generators[id].purchased = thresholdTwo.clampMax(3000).plus(thresholdThree).ceil()
+
+                    player.m.generators[id].amount = player.m.generators[id].amount.clampMin(player.m.generators[id].purchased)
                 },
                 effect() {
                     return new Decimal(0)
@@ -420,7 +440,7 @@ addLayer("m", {
                 return player.m.points.gte(this.cost)
             },
             effect() {
-                return new Decimal(8)
+                return new Decimal(15)
             }
         },
         24: {
@@ -469,7 +489,7 @@ addLayer("m", {
             cost: new Decimal(200),
             fullDisplay() {
                 return `<h3>Atoms provide a small boost to Accelerators
-                <br>Currently: ×${format(this.effect())}
+                <br>Currently: ×${format(this.effect(), 3)}
                 <br>Costs: ${formatWhole(this.cost)} Manifolds`
             },
             canAfford() {
@@ -569,11 +589,11 @@ addLayer("m", {
                 multiplier = new Decimal(1).plus(completions.div(20))
 
                 // Credit to TaeronQ for this formula
-                let x = player.m.best 
-                let convergeLimit = new Decimal(1.797e308)
-                let convergeEff = new Decimal('e2000')
+                let x = player.m.best.clampMax("1.797e308")
+                let convergeLimit = new Decimal("1.797e308")
+                let convergeEff = new Decimal('1e2000')
 
-                return Decimal.sub(1, x.add(1).log(convergeLimit).add(1).mul(multiplier).recip()).pow_base(convergeEff)
+                return x.add(1).log(convergeLimit).mul(multiplier).clampMax(1).pow_base(convergeEff)
             },
             completionLimit() {
                 return challengeCompletions("m", 32) >= 1 ? 2 : 1
@@ -654,7 +674,7 @@ addLayer("m", {
             },
             fullDisplay() { return `<h5 style="font-size:11px">Only the latest purchased Generator produces normally. All other generator production is raised ^0.75. Neither Intensity nor Interval upgrades affect this.
                 <br><br>Goal: Reach ${format(this.goal())} Quarks
-                <br>Reward: All Quark Generator Intensities become x^1.05${this.tier2_Reward()}` },
+                <br>Reward: All Quark Generator Multipliers become x^1.05${this.tier2_Reward()}` },
             canComplete() { return player.points.gte(this.goal()) },
             completions() { return challengeCompletions(this.layer, this.id) },
             completionLimit() {
@@ -673,7 +693,7 @@ addLayer("m", {
             name: `<h3 style="position: absolute; top: 0px; left: 0px; width: 400px; text-align: center !important;">
             Desolate Desecration`,
             unlocked() { return hasAchievement("ach", 17) },
-            fullDisplay() { return `<h5 style="font-size:11px">Atoms are disabled. By default, the first ${formatWhole(6)} Generators are unlocked. Quark generation is severely reduced based on the highest purchased Generator. Phase shifts reduce this nerf, but Intensity upgrades weaken all Generators.
+            fullDisplay() { return `<h5 style="font-size:11px">Atoms are disabled. By default, the first ${formatWhole(6)} Generators are unlocked. Quark generation is severely reduced based on the highest purchased Generator. Phase shifts reduce this nerf, but Interval upgrades weaken all Generators.
                 <br><br>Goal: Reach ${format(new Decimal("1e7500"))} Quarks
                 <br>Reward: Unlock Strange and Charmed matter` },
             canComplete() { return player.points.gte(new Decimal("1e7500")) }
@@ -683,18 +703,25 @@ addLayer("m", {
     clickables: {
         101: {
             display() {
+                if (this.canClick() == false) {
+                    return `<h3>Reach ${format("1.8e308")} Quarks to Big Rip`
+                }
+                if (getResetGain(this.layer).gt(1000)) {
+                    return `<h3>Big rip for ${formatWhole(getResetGain("m"))} ${pluralize("Manifold", getResetGain("m"))}</h3>`
+                }
                 return `
                     <h3>Big rip for ${formatWhole(getResetGain("m"))} ${pluralize("Manifold", getResetGain("m"))}</h3>
                     <br><br><h4>Next At: ${format(getNextAt("m"))} Quarks
                 `
             },
-            unlocked() { return true },
+            unlocked() { return player.m.resets.gte(1) || player.q.atoms.gte(4) },
             canClick() { return player.points.gte("1.8e308") },
             style: {
                 "width": "200px",
-                "height": "120px",
+                "height": "100px",
                 "min-width": "200px",
-                "min-height": "120px",
+                "max-width": "200px",
+                "min-height": "100px",
             },
             onClick() {
                 player.m.points = player.m.points.plus(getResetGain(this.layer))
@@ -713,6 +740,24 @@ addLayer("m", {
                     player.m.generators[i].amount = new Decimal(0).clampMin(player.m.generators[i].purchased)
                 }
             },
+        },
+        11: {
+            display() {
+                return `<h3>Max All MGs`
+            },
+            unlocked() { return true },
+            canClick() { return true },
+            style: {
+                "width": "50px",
+                "height": "25px",
+                "min-width": "50px",
+                "min-height": "25px",
+            },
+            onClick() {
+                for (const id of [100, 101, 102, 103, 104, 105, 106, 107]) {
+                    buyMaxBuyable("m", id)
+                }
+            }
         }
     },
     layerShown() {return true},
@@ -720,23 +765,23 @@ addLayer("m", {
     getResetGain() {
         let q = player.q.best
         let mult = tmp.m.values.manifoldMultiplier
+        let divisor = tmp.m.values.manifoldFormulaDivisor
 
-        return q.log10().sub(308).div(308).pow_base(2).mul(mult).floor()
+        return q.log10().sub(308).div(divisor).pow_base(2).mul(mult).floor()
     },
 
     getNextAt() {
         let q = player.q.best
         let mult = tmp.m.values.manifoldMultiplier.clampMin(1)
+        let divisor = tmp.m.values.manifoldFormulaDivisor
 
-        return getResetGain("m").plus(1).div(mult).log(2).mul(308).plus(308).pow10().ceil()
+        return getResetGain("m").plus(1).div(mult).log(2).mul(divisor).plus(308).pow10().ceil()
     },
 
     tabFormat: {
         "Upgrades": {
             content: [
-                "blank",
-                ["clickable", [101]],
-                "blank",
+                ["blank", "100px"],
                 ["buyables", [20]],
                 "upgrades",
             ],
@@ -778,13 +823,17 @@ addLayer("m", {
             "height": "100px",
             "min-height": "100px",
             "border-radius": "5px",
-            "margin": "5px"
+            "margin": "5px",
         },
         "column": {
             "outline": "3px solid",
             "border-radius":"5px",
             "padding":"20px",
             "margin":"10px",
+            "background-color":"transparent",
+        },
+        "upgRow": {
+            "background-color":"transparent",
         },
         "clickable": {
             "width": "180px",

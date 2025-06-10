@@ -16,18 +16,105 @@ h1, h2, h3, b, input {
 
 /* These are styles for different states of components. You can make layer-specific versions with .c.locked, for example */
 .locked {
-	background-color: #bf8f8f;
+	background-color: var(--locked) !important;
 	cursor: not-allowed;
 }
 
 /* Can meens can be clicked/bought/etc */
 .can {
+	color: var(--points);
 	cursor: pointer;
 }
 
 .can:hover {
-	transform: scale(1.15, 1.15);
-	box-shadow: 0 0 20px var(--points)
+	color: #000000;
+	cursor: pointer;
+}
+
+/* Manifold */
+.m {
+	border-color: var(--manifold);
+}
+
+.m.can {
+	color: var(--points);
+	background-color: var(--background) !important;
+}
+
+.m.can:hover {
+	color: #000000 !important;
+	background-color: var(--manifold) !important;
+}
+
+.m.bought {
+	background-color: var(--manifold);
+}
+
+/* Supernova */
+.s {
+	border-color: var(--supernova);
+}
+
+.s.can {
+	color: var(--points);
+	background-color: var(--background) !important;
+}
+
+.s.can:hover {
+	color: #000000 !important;
+	background-color: var(--supernova) !important;
+}
+
+.s.bought {
+	background-color: var(--supernova);
+}
+
+/* Space Generators */
+
+.spaceGenerators {
+	border-color: rgb(84, 46, 187);
+}
+
+.spaceGenerators.can {
+	color: var(--points);
+	background-color: var(--background) !important;
+}
+
+.spaceGenerators.can:hover {
+	color: #000000 !important;
+	background-color: rgb(84, 46, 187) !important;
+}
+
+.spaceGenerators.bought {
+	background-color: var(--supernova);
+}
+
+/* Supernova Milestones */
+
+.supernovaMilestones.milestone {
+	outline-color: var(--supernova) !important;
+	outline: 2px solid;
+	background-color: var(--background);
+	color: var(--points)
+}
+
+.supernovaMilestones.milestoneDone {
+	outline-color: transparent !important;
+	background-color: var(--supernova);
+	color: var(--background)
+}
+
+/* Automation Stuffs */
+
+.automation.can {
+	background-color: var(--background) !important;
+	color: var(--points);
+	border-color: var(--points);
+}
+
+.automation.can:hover {
+	background-color: var(--points) !important;
+	color: var(--background);
 }
 
 .bought {

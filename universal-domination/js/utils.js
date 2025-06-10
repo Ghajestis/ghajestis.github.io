@@ -415,5 +415,43 @@ function gridRun(layer, func, data, id) {
 function pluralize(str = String, val = Object) {
 	// if (!val.mag) throw new error("Did not import number in pluralize function")
 
-	if (val.neq(1)) return str + "s"; else return str
+	if (str == "Supernova" && new Decimal(val).neq(1)) return str + "e";
+	if (new Decimal(val).neq(1)) return str + "s"; else return str
+}
+
+// Get a milestone effect because for some reason that doesn't exist
+function milestoneEffect(layer, id) {
+	return tmp[layer].milestones[id].effect
+}
+
+function treeDisplay(str, id, cost, effect, max, amount, type) {
+	if (this.idOverride != undefined) id = this.idOverride
+	text = `<h3 style="white-space: normal">`
+
+	console.log(id + " " + type)
+
+	let w = ``
+	let x = ``
+	let y = ``
+	let z = ``
+
+	if (type == "Milestone") {
+		id = id + " Milestone"
+		z = `<br>Requires: ${formatWhole(cost[0])} ${cost[1]}`
+		return `<h1 style="color: var(--points); position:absolute; left: 0; top: -20px; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000;">${id}` + text + str + z
+	}
+
+	if (type == "multiplicative") {w = `×`} else if (type == "additive") {w = `+`} else if (type == "divisor") {w = "/"} else if (type == "power") {w = `^`}
+	if (max == Infinity) { x = `(${amount} / ∞)<br>` }
+	else if (max > 1) x = `(${amount} / ${max})<br>`
+	str = text + x + str
+
+	if (effect != undefined) y = `<br><br>Currently: ${w}${format(effect)}`
+	if (amount < max) z = `<br>Costs: ${formatWhole(cost)} Stardust`
+
+	return `<h1 style="color: var(--points); position:absolute; left: 0; top: -20px; text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000;">${id}`+ str + y + z
+}
+
+function constellationAmount(id) {
+	return player.constellation.clickables[id].amount
 }

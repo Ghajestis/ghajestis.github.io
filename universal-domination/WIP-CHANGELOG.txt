@@ -17,8 +17,6 @@ KNOWN ISSUES:
 Atoms reset to zero in Respecialized Advancements if you attempt to purchase more than 4. This is due to the buy max
 code for Atoms, which doesn't account for the edge case of being in this challenge. I do not know if it actually
 makes the challenge impossible.
-Residual Annihilation actually raises Intensities ^2.05 instead of 1.05, and somehow the game is balanced despite that.
-CBA to deal with this right now - My thought is I can buff its intended effect slightly and then buff Destructive Returns's effect
 
 a0.11 - Emergency Bug Squash and Balance Hotfix
 - Fixed a bug that allowed you to continue purchasing Interval upgrades even when the Phase Shift prompt was visible.
@@ -26,3 +24,19 @@ a0.11 - Emergency Bug Squash and Balance Hotfix
 - Added rewards for Achievements 11-18
 - The base Atom multiplier is now ×5
 - Manifold Upgrade 23 buffed from ×10 → ×20
+
+a0.20 - Stuff the update
+- Updated visuals for pretty much the whole game
+- Fixed a bug that caused the Atom multiplier to not apply to the 4th Generator (MC1x1 should be possible now!)
+- Added some more Achievements, gave functionality to some of them
+- Fixed a bug with Residual Annihilation's reward that caused its effect to actually be ^2.05
+- Made Residual Annihilation's effect affect QG Multipliers instead of Intensity to compensate
+- Buffed the formula for Destructive Returns to compensate
+- Added a Max All button for Manifold Generators
+- Touched up the Perfect Matter formula
+- Added a Statistics tab
+- Implemented the Options tab
+
+Additions that will not be included on release:
+- Added Supernova reset layer (5^x/308)
+- Added Space Generators, which increase your Buy 10 Multiplier

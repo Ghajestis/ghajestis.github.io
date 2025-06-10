@@ -2,8 +2,9 @@ let modInfo = {
 	name: "Universal Domination",
 	author: "Ghajestis",
 	pointsName: "Quarks",
-	modFiles: ["layers/quarks.js", "tree.js", "layers/main.js", "layers/achievements.js", "layers/automation.js",
+	modFiles: ["layers/quarks.js", "tree.js", "layers/main.js", "layers/achievements.js", "layers/automation.js", "layers/statistics.js",
 		"layers/manifold/manifold.js", "layers/manifold/exotic-matter.js", // Big Rip
+		"layers/supernova/main.js", "layers/supernova/space-generators.js", "layers/supernova/milestones.js", "layers/supernova/constellation.js" // Supernova
 	],
 
 	discordName: "",
